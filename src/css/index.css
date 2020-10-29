@@ -1,3 +1,7 @@
+/* 全局样式 */
+body {
+  background-color: #f5f7f9;
+}
 @font-face {
   font-family: "iconfont";
   src: url('//at.alicdn.com/t/font_2163404_p88a1lbkkz.eot?t=1603864314708');
@@ -74,4 +78,10 @@
 }
 .iconyoujiantou:before {
   content: "\e60c";
+}
+.page-nav-bar {
+  background-color: #3296fa !important;
+}
+.page-nav-bar .van-nav-bar__title {
+  color: #fff;
 }
