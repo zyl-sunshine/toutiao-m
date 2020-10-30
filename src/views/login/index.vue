@@ -1,7 +1,9 @@
 <template>
   <div id="login-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" title="登录" />
+    <van-nav-bar class="page-nav-bar" title="登录">
+      <van-icon slot="left" name="cross" @click="$router.back()"></van-icon>
+    </van-nav-bar>
     <!-- 表单 -->
     <van-form ref="loginForm" @submit="onSubmit">
       <van-field
@@ -96,12 +98,13 @@ export default {
       // 1.获取表单数据
       const user = this.user
       // 2.表单验证
-      // 3.发请求提交
+
       this.$toast.loading({
         message: '加载中...',
         forbidClick: true,
         duration: 2000
       })
+      // 3.发请求提交
       // try {
       //   const res = await login(user)
       //   this.$toast.success('登录成功')
@@ -113,13 +116,13 @@ export default {
       //     this.$toast.fail('登录失败,请稍后重试')
       //   }
       // }
-
       login(user)
         .then(({ data: res }) => {
           this.$toast.success('登录成功')
           // console.log(res.data)
           // 登录成功将token存储到浏览器
           this.$store.commit('setUser', res.data)
+          this.$router.push('/my')
         })
         .catch(err => {
           if (err.response.status === 400) {

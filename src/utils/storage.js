@@ -13,7 +13,7 @@ export const getItem = name => {
 }
 export const setItem = (name, value) => {
   if (typeof value === 'object') {
-    return (value = JSON.stringify(value))
+    value = JSON.stringify(value)
   }
   window.localStorage.setItem(name, value)
 }
