@@ -1,7 +1,7 @@
 <template>
   <div class="layout-container">
     <router-view></router-view>
-    <van-tabbar route>
+    <van-tabbar route ref="tabbarH">
       <van-tabbar-item to="/home">
         <i slot="icon" class="iconfont iconshouye"></i>
         <span class="text">首页</span>
@@ -23,7 +23,22 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      tabbarHeight: 0
+    }
+  },
+  mounted() {
+    this.getHeight()
+  },
+  methods: {
+    getHeight() {
+      this.tabbarHeight = this.$refs.tabbarH.$el.offsetHeight
+      this.$store.commit('getTabbarHeight', this.tabbarHeight)
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

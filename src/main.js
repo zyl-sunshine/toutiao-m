@@ -11,6 +11,8 @@ import 'vant/lib/index.css'
 import 'amfe-flexible'
 // 加载全局样式
 import './styles/index.less'
+
+import './utils/day.js'
 // 注册使用vant全局样式
 Vue.use(Vant)
 

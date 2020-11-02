@@ -20,10 +20,18 @@ export const sendSms = mobile => {
 // 获取基本用户信息
 export const getUserInfo = () => {
   return request({
-    methods: 'GET',
+    method: 'GET',
     url: '/app/v1_0/user'
     // headers: {
     //   Authorization: `Bearer ${store.state.user.token}`
     // }
+  })
+}
+
+// 获取用户频道列表
+export const getUserChannels = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user/channels'
   })
 }
