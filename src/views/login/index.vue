@@ -69,8 +69,8 @@ export default {
   data() {
     return {
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810'
       },
       // 表单验证
       userFromRules: {

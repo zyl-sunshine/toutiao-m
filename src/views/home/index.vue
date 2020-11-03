@@ -36,14 +36,24 @@
       closeable
       close-icon-position="top-left"
       round
-      :style="{ height: '90%' }"
-    />
+      :style="{ height: '95%' }"
+    >
+      <!-- 弹出层组件 -->
+      <channel-edit
+        :my-channel="channelsData"
+        :active="active"
+        @updata-active="onUpdataactive"
+      ></channel-edit>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user.js'
 import articleList from './components/article-list'
+import channelEdit from './components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'homeIndex',
   data() {
@@ -59,7 +69,9 @@ export default {
     }
   },
   components: {
-    articleList
+    articleList,
+    channelEdit,
+    ...mapState(['user'])
   },
   created() {
     this.loadChannel()
@@ -73,14 +85,39 @@ export default {
   methods: {
     // 获取用户频道列表数据
     loadChannel() {
-      getUserChannels()
-        .then(({ data: res }) => {
-          console.log(res)
-          this.channelsData = res.data.channels
-        })
-        .catch(() => {
-          this.$toast('获取频道数据失败')
-        })
+      // getUserChannels()
+      //   .then(({ data: res }) => {
+      //     console.log(res)
+      //     this.channelsData = res.data.channels
+      //   })
+      //   .catch(() => {
+      //     this.$toast('获取频道数据失败')
+      //   })
+
+      try {
+        let channels = []
+        if (this.user) {
+          // 已登录,请求获取用户频道列表
+          getUserChannels().then(({ data }) => {
+            channels = data.data.channels
+          })
+        } else {
+          // 未登录,判断是否有本地的频道列表数据
+          const localChannels = getItem('CHANNEL_TOKEN')
+          // 有,拿来使用
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            // 没有,请求获取默认频道列表
+            getUserChannels().then(({ data }) => {
+              channels = data.data.channels
+            })
+          }
+        }
+        this.channelsData = channels
+      } catch {
+        this.$toast('获取频道数据失败')
+      }
     },
     // 获取高度
     getHeight() {
@@ -91,6 +128,11 @@ export default {
         tabHeight: this.tabHeight,
         navTabHeight: this.navTabHeight
       })
+    },
+    // 接收子组件发送过来的通知修改子组件传过来的active值
+    onUpdataactive(index, isEditChannelShow = true) {
+      this.active = index
+      this.isEditChannelShow = isEditChannelShow
     }
   }
 }
