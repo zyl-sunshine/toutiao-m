@@ -3,7 +3,12 @@
     <!-- 顶部搜索框 -->
     <van-nav-bar class="page-nav-bar" fixed ref="tabH">
       <template #title>
-        <van-button size="small" round class="search-btn" icon="search"
+        <van-button
+          size="small"
+          round
+          class="search-btn"
+          icon="search"
+          @click="$router.push('/search')"
           >搜索</van-button
         >
       </template>
@@ -60,7 +65,7 @@ export default {
     return {
       active: 0,
       // 用户频道列表数据
-      channelsData: {},
+      channelsData: [],
       // 导航栏高度
       tabHeight: 0,
       navTabHeight: 0,
@@ -70,8 +75,7 @@ export default {
   },
   components: {
     articleList,
-    channelEdit,
-    ...mapState(['user'])
+    channelEdit
   },
   created() {
     this.loadChannel()
@@ -94,30 +98,58 @@ export default {
       //     this.$toast('获取频道数据失败')
       //   })
 
-      try {
-        let channels = []
-        if (this.user) {
-          // 已登录,请求获取用户频道列表
+      let channels = []
+      if (this.user) {
+        // 已登录,请求获取用户频道列表
+        getUserChannels()
+          .then(({ data }) => {
+            channels = data.data.channels
+            this.channelsData = channels
+          })
+          .catch(() => {
+            this.$toast('获取频道列表失败')
+          })
+      } else {
+        // 未登录,判断是否有本地的频道列表数据
+        const localChannels = getItem('CHANNEL_TOKEN')
+        // 有,拿来使用
+        if (localChannels) {
+          channels = localChannels
+
+          this.channelsData = channels
+        } else {
+          // 没有,请求获取默认频道列表
           getUserChannels().then(({ data }) => {
             channels = data.data.channels
+
+            this.channelsData = channels
           })
-        } else {
-          // 未登录,判断是否有本地的频道列表数据
-          const localChannels = getItem('CHANNEL_TOKEN')
-          // 有,拿来使用
-          if (localChannels) {
-            channels = localChannels
-          } else {
-            // 没有,请求获取默认频道列表
-            getUserChannels().then(({ data }) => {
-              channels = data.data.channels
-            })
-          }
         }
-        this.channelsData = channels
-      } catch {
-        this.$toast('获取频道数据失败')
       }
+      // try {
+      //   let channels = []
+      //   if (this.user) {
+      //     // 已登录,请求获取用户频道列表
+      //     getUserChannels().then(({ data }) => {
+      //       channels = data.data.channels
+      //     })
+      //   } else {
+      //     // 未登录,判断是否有本地的频道列表数据
+      //     const localChannels = getItem('CHANNEL_TOKEN')
+      //     // 有,拿来使用
+      //     if (localChannels) {
+      //       channels = localChannels
+      //     } else {
+      //       // 没有,请求获取默认频道列表
+      //       getUserChannels().then(({ data }) => {
+      //         channels = data.data.channels
+      //       })
+      //     }
+      //   }
+      //   this.channelsData = channels
+      // } catch {
+      //   this.$toast('获取频道数据失败')
+      // }
     },
     // 获取高度
     getHeight() {
@@ -134,6 +166,9 @@ export default {
       this.active = index
       this.isEditChannelShow = isEditChannelShow
     }
+  },
+  computed: {
+    ...mapState(['user'])
   }
 }
 </script>

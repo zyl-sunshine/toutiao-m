@@ -123,38 +123,40 @@ export default {
         if (index <= this.active) {
           this.$emit('updata-active', this.active - 1, true)
         }
+        this.deleteChannel(channel)
       } else {
         // 非编辑状态,执行切换频道
         // 子组件不能直接修改父组件传过来的值
         // 发送通知让父组件修改
         this.$emit('updata-active', index, false)
       }
-
-      this.deleteChannel(channel)
     },
     // 删除频道
-    deleteChannel(channel) {
-      if (this.user) {
-        //已登录,则将数据更新到线上
-        deleteUserChannel(channel.id)
-          .then(() => {})
-          .catch(() => {
-            this.$toast('删除失败,请稍后再试')
-          })
-      } else {
-        //未登录,将数据更新到本地
-        setItem('CHANNEL_TOKEN', this.myChannel)
+    async deleteChannel(channel) {
+      try {
+        if (this.user) {
+          await deleteUserChannel(channel.id)
+        } else {
+          setItem('CHANNEL_TOKEN', this.myChannel)
+        }
+      } catch (err) {
+        this.$toast('操作失败,请稍后再试')
       }
     }
-    // async deleteChannel(channel) {
-    //   try {
-    //     if (this.user) {
-    //       await deleteUserChannel(channel.id)
-    //     } else {
-    //       setItem('CHANNEL_TOKEN', this.myChannel)
-    //     }
-    //   } catch (err) {
-    //     this.$toast('操作失败,请稍后再试')
+    // 删除频道
+    // deleteChannel(channel) {
+    //   if (this.user) {
+    //     // 已登录,则将数据更新到线上
+    //     deleteUserChannel(channel.id)
+    //       .then(() => {
+    //         this.$toast('删除成功')
+    //       })
+    //       .catch(() => {
+    //         this.$toast('删除失败,请稍后再试')
+    //       })
+    //   } else {
+    //     // 未登录,将数据更新到本地
+    //     setItem('CHANNEL_TOKEN', this.myChannel)
     //   }
     // }
   },
