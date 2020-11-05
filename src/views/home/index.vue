@@ -105,6 +105,7 @@ export default {
           .then(({ data }) => {
             channels = data.data.channels
             this.channelsData = channels
+            // console.log(channels)
           })
           .catch(() => {
             this.$toast('获取频道列表失败')
@@ -115,13 +116,11 @@ export default {
         // 有,拿来使用
         if (localChannels) {
           channels = localChannels
-
           this.channelsData = channels
         } else {
           // 没有,请求获取默认频道列表
           getUserChannels().then(({ data }) => {
             channels = data.data.channels
-
             this.channelsData = channels
           })
         }

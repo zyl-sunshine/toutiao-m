@@ -82,7 +82,7 @@ export default {
         with_top: 1
       })
         .then(({ data: res }) => {
-          console.log(res)
+          // console.log(res)
           // console.log(this.$store.state.screenHeight)
           // console.log(this.articleListHeight)
           // 2.把请求结果数据放到list数组中
