@@ -63,11 +63,6 @@ export default {
       }
       this.searchHistories.unshift(val)
       this.flag = '2'
-
-      console.log(
-        'searchText 变化了,调用 setItem 方法,此时存入了一个数据, Key 为 SEARCH_HISTORIES,值为' +
-          val
-      )
     },
     onCancel() {
       this.$router.back()

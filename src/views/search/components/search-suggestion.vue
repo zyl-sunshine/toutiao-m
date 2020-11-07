@@ -59,6 +59,7 @@ export default {
           this.$toast('获取数据失败')
         })
     },
+    // 搜索关键字高亮
     heightLight(text) {
       const heightLightStr = `<span class="active">${this.searchText}</span>`
       // RegExp正则表达式构造函数

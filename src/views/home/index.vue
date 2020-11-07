@@ -152,7 +152,7 @@ export default {
     },
     // 获取高度
     getHeight() {
-      // console.log(this.$refs.tabH.$el.clientHeight)
+      // console.log(this.$refs.tabH)
       this.tabHeight = this.$refs.tabH.$el.offsetHeight
       this.navTabHeight = this.$refs.navTab.$el.offsetHeight
       this.$store.commit('getNavHeight', {
