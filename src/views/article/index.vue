@@ -74,12 +74,24 @@
           ref="articleContent"
         ></div>
         <van-divider>正文结束</van-divider>
+        <!-- 文章评论 -->
+        <article-comment
+          :articleId="article.art_id"
+          @onload-success="totalCount = $event.total_count"
+          :list="commentList"
+          @reply-click="onReplyClick"
+        ></article-comment>
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPopupshow = true"
             >写评论</van-button
           >
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-icon name="comment-o" :info="totalCount" color="#777" />
           <!-- <van-icon color="#777" name="star-o" /> -->
           <!-- 收藏文章 -->
           <!-- 模板中的$event 是事件参数
@@ -127,6 +139,25 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+    <!-- 添加评论 -->
+    <van-popup class="popupup" v-model="isPopupshow" position="bottom" round>
+      <comment-popup
+        :target="article.art_id"
+        @post-success="onPostSuccess"
+      ></comment-popup>
+    </van-popup>
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="isReplyshow"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <comment-reply
+        v-if="isReplyshow"
+        @click-close="isReplyshow = false"
+        :comment="currentComment"
+      ></comment-reply>
+    </van-popup>
   </div>
 </template>
 
@@ -137,6 +168,9 @@ import { ImagePreview } from 'vant'
 import followUser from '@/components/follow-user'
 import collectArticle from '@/components/collect-article'
 import likeArticle from '@/components/like-article'
+import articleComment from './components/article-comment'
+import commentPopup from './components/comment-popup'
+import commentReply from './components/comment-reply'
 // 图片预览
 
 export default {
@@ -144,7 +178,15 @@ export default {
   components: {
     followUser,
     collectArticle,
-    likeArticle
+    likeArticle,
+    articleComment,
+    commentPopup,
+    commentReply
+  },
+  provide: function() {
+    return {
+      articleId: this.articleId
+    }
   },
   props: {
     articleId: {
@@ -162,7 +204,15 @@ export default {
       // 1 :文章详情
       // 2 ：加载失败 404
       // 3 ：其他原因加载失败
-      flag: '0'
+      flag: '0',
+      // 评论总数量
+      totalCount: 0,
+      // 发表评论弹出层的显示与隐藏
+      isPopupshow: false,
+      commentList: [],
+      // 评论回复弹出层
+      isReplyshow: false,
+      currentComment: {}
     }
   },
   computed: {},
@@ -222,6 +272,15 @@ export default {
           })
         }
       })
+    },
+    onPostSuccess(res) {
+      this.isPopupshow = false
+      // console.log(res)
+      this.commentList.unshift(res.new_obj)
+    },
+    onReplyClick(comment) {
+      this.currentComment = comment
+      this.isReplyshow = true
     }
 
     // onFollow(id) {
@@ -246,6 +305,9 @@ export default {
 
 <style scoped lang="less">
 .article-container {
+  .popupup {
+    padding-top: 80px;
+  }
   .main-wrap {
     position: fixed;
     left: 0;

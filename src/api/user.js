@@ -54,3 +54,27 @@ export const getUnFollowings = id => {
     url: `/app/v1_0/user/followings/${id}`
   })
 }
+
+/* 获取用户个人资料 */
+export const getUserProfile = id => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user/profile'
+  })
+}
+// 编辑提交用户个人资料
+export const editUserProfile = data => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/profile',
+    data
+  })
+}
+// 编辑用户照片
+export const editUserPhoto = data => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/photo',
+    data
+  })
+}

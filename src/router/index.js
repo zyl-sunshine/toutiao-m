@@ -47,6 +47,11 @@ const routes = [
     component: () => import('@/views/article'),
     // 开启了props参数传递,就是将路由中的参数映射到组件的props中
     props: true
+  },
+  {
+    path: '/user/profile',
+    name: 'user-proflie',
+    component: () => import('@/views/user-profile')
   }
 ]
 
